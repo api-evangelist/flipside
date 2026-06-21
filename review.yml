@@ -1,0 +1,68 @@
+aid: flipside
+name: Flipside Crypto
+review:
+  question: Does Flipside Crypto expose a documented public WebSocket API?
+  answer: false
+  date: '2026-06-21'
+  reviewer: API Evangelist
+  asyncapiSpecCreated: false
+  asyncapiScopeNote: |
+    No AsyncAPI document was created. The Flipside Data API is a request/response
+    SQL execution API with no server-push, SSE, or WebSocket surface. Realtime is
+    approximated by client-side polling of getQueryRun, not by an event stream, so
+    there is nothing in scope for AsyncAPI modeling.
+findings:
+  summary: |
+    Flipside Crypto does not publish a documented public WebSocket API. The
+    Flipside Data API is delivered as JSON-RPC 2.0 over HTTP: every operation is
+    an HTTPS POST to a single endpoint, https://api-v2.flipsidecrypto.xyz/json-rpc,
+    with a {jsonrpc, method, params, id} body and an x-api-key header. It is a
+    transport detail worth flagging in the catalog: although modeled in OpenAPI as
+    one POST path, the real API multiplexes methods (createQuery, getQueryRun,
+    getQueryRunResults, cancelQueryRun) through the JSON-RPC `method` field rather
+    than distinct REST resources. Query execution is asynchronous but is consumed
+    by polling getQueryRun for state transitions, not by any push/streaming channel.
+    No ws:// or wss:// endpoint is documented. Note also that in May 2026 Flipside
+    sold its blockchain data business to SonarX and refocused on its edisyl AI
+    platform; the Data API documented here reflects the Flipside surface as published.
+  transports:
+    - protocol: JSON-RPC over HTTP
+      scheme: https
+      baseURL: https://api-v2.flipsidecrypto.xyz/json-rpc
+      documented: true
+      note: JSON-RPC 2.0 envelope over HTTPS POST; method selected by the `method` field, auth via x-api-key header.
+    - protocol: SSE
+      scheme: https
+      documented: false
+      note: No Server-Sent Events surface; asynchronous query completion is consumed by polling getQueryRun.
+    - protocol: WebSocket
+      scheme: wss
+      documented: false
+      note: No WebSocket endpoint is documented for query execution, results streaming, or any other Flipside Data API surface as of the review date.
+  endpointsConfirmedRest:
+    - POST https://api-v2.flipsidecrypto.xyz/json-rpc (method=createQuery)
+    - POST https://api-v2.flipsidecrypto.xyz/json-rpc (method=getQueryRun)
+    - POST https://api-v2.flipsidecrypto.xyz/json-rpc (method=getQueryRunResults)
+    - POST https://api-v2.flipsidecrypto.xyz/json-rpc (method=cancelQueryRun)
+sources:
+  - url: https://docs.flipsidecrypto.xyz
+    type: Documentation
+    note: Data products / API & SDK documentation; describes the JSON-RPC Data API and x-api-key auth.
+  - url: https://docs.flipsidecrypto.xyz/data/data-products/api-sdk-developers/get-started/run-your-first-query
+    type: APIReference
+    note: Run-your-first-query walkthrough using createQuery / getQueryRun / getQueryRunResults.
+  - url: https://github.com/FlipsideCrypto/sdk
+    type: SourceCode
+    note: Official Python/JS SDKs that issue the JSON-RPC methods over HTTP; no WebSocket transport.
+  - url: https://www.sonarx.com/blog/sonarx-acquires-flipside-crypto-blockchain-data-business
+    type: Announcement
+    note: May 2026 acquisition of Flipside's blockchain data business by SonarX.
+actions:
+  asyncapiPath: null
+  apisYmlUpdated: true
+  reason: |
+    No WebSocket or SSE protocol surface exists, so no AsyncAPI document was
+    authored. The OpenAPI document models the JSON-RPC-over-HTTP transport as a
+    single POST /json-rpc path with method-discriminated request/response schemas,
+    and the transport caveat (JSON-RPC multiplexing, not REST resources) is noted
+    explicitly so the JSON-RPC nature of the API is never misread as conventional REST.

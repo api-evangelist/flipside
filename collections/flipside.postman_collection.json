@@ -1,0 +1,120 @@
+{
+  "info": {
+    "name": "Flipside Crypto Data API",
+    "description": "JSON-RPC 2.0 over HTTP. Every request is an HTTP POST to https://api-v2.flipsidecrypto.xyz/json-rpc carrying a {jsonrpc, method, params, id} body, authenticated with an x-api-key header. The JSON-RPC `method` field selects the operation (createQuery, getQueryRun, getQueryRunResults, cancelQueryRun).",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "auth": {
+    "type": "apikey",
+    "apikey": [
+      { "key": "key", "value": "x-api-key", "type": "string" },
+      { "key": "value", "value": "{{apiKey}}", "type": "string" },
+      { "key": "in", "value": "header", "type": "string" }
+    ]
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "https://api-v2.flipsidecrypto.xyz", "type": "string" },
+    { "key": "apiKey", "value": "", "type": "string" },
+    { "key": "queryRunId", "value": "", "type": "string" }
+  ],
+  "item": [
+    {
+      "name": "Query Execution (SQL)",
+      "item": [
+        {
+          "name": "createQuery - submit and run Snowflake SQL",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "x-api-key", "value": "{{apiKey}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/json-rpc",
+              "host": ["{{baseUrl}}"],
+              "path": ["json-rpc"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"jsonrpc\": \"2.0\",\n  \"method\": \"createQuery\",\n  \"params\": [\n    {\n      \"sql\": \"SELECT block_number, tx_hash FROM ethereum.core.fact_transactions LIMIT 100\",\n      \"resultTTLHours\": 1,\n      \"maxAgeMinutes\": 0,\n      \"tags\": { \"sdk_package\": \"postman\" },\n      \"dataSource\": \"snowflake-default\",\n      \"dataProvider\": \"flipside\"\n    }\n  ],\n  \"id\": 1\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "description": "Creates a query run for a Snowflake-compatible SQL string and returns a queryRunId. maxAgeMinutes=0 forces fresh execution; resultTTLHours controls result retention."
+          },
+          "response": []
+        },
+        {
+          "name": "getQueryRun - poll execution status",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "x-api-key", "value": "{{apiKey}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/json-rpc",
+              "host": ["{{baseUrl}}"],
+              "path": ["json-rpc"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"jsonrpc\": \"2.0\",\n  \"method\": \"getQueryRun\",\n  \"params\": [\n    { \"queryRunId\": \"{{queryRunId}}\" }\n  ],\n  \"id\": 1\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "description": "Returns the state of a query run (QUERY_STATE_RUNNING, QUERY_STATE_SUCCESS, QUERY_STATE_FAILED, QUERY_STATE_CANCELED)."
+          },
+          "response": []
+        },
+        {
+          "name": "cancelQueryRun - cancel a running query",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "x-api-key", "value": "{{apiKey}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/json-rpc",
+              "host": ["{{baseUrl}}"],
+              "path": ["json-rpc"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"jsonrpc\": \"2.0\",\n  \"method\": \"cancelQueryRun\",\n  \"params\": [\n    { \"queryRunId\": \"{{queryRunId}}\" }\n  ],\n  \"id\": 1\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "description": "Cancels an in-progress query run to stop consuming query seconds."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Query Results",
+      "item": [
+        {
+          "name": "getQueryRunResults - fetch paginated results",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "x-api-key", "value": "{{apiKey}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/json-rpc",
+              "host": ["{{baseUrl}}"],
+              "path": ["json-rpc"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"jsonrpc\": \"2.0\",\n  \"method\": \"getQueryRunResults\",\n  \"params\": [\n    {\n      \"queryRunId\": \"{{queryRunId}}\",\n      \"format\": \"json\",\n      \"page\": { \"number\": 1, \"size\": 1000 }\n    }\n  ],\n  \"id\": 1\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "description": "Returns columnNames, columnTypes, rows, and page metadata for a completed query run. Each page is capped at ~30MB; default page size is 1000 rows."
+          },
+          "response": []
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,97 @@
+aid: flipside
+url: https://raw.githubusercontent.com/api-evangelist/flipside/refs/heads/main/apis.yml
+name: Flipside Crypto
+kind: company
+description: Flipside Crypto is a blockchain analytics platform that lets analysts and
+  developers run SQL queries against curated, Snowflake-backed on-chain datasets covering
+  Ethereum, Solana, and 20+ other chains. The Data API exposes query execution and
+  result retrieval over a JSON-RPC-style HTTP interface at api-v2.flipsidecrypto.xyz,
+  authenticated with an x-api-key. In May 2026 Flipside sold its blockchain data business
+  to SonarX and refocused on its edisyl enterprise AI platform; this catalog documents
+  the Flipside Data API as published.
+image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
+tags:
+- Blockchain
+- Analytics
+- SQL
+- Web3
+- Data
+created: '2026-06-21'
+modified: '2026-06-21'
+specificationVersion: '0.19'
+apis:
+- aid: flipside:query-execution-sql
+  name: Query Execution (SQL)
+  tags:
+  - SQL
+  - Query
+  - Execution
+  image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
+  humanURL: https://docs.flipsidecrypto.xyz
+  baseURL: https://api-v2.flipsidecrypto.xyz/json-rpc
+  properties:
+  - url: https://docs.flipsidecrypto.xyz
+    type: Documentation
+  - url: https://docs.flipsidecrypto.xyz/data/data-products/api-sdk-developers/get-started/run-your-first-query
+    type: APIReference
+  - url: openapi/flipside-openapi.yml
+    type: OpenAPI
+  description: Submit Snowflake-compatible SQL against curated on-chain datasets, poll
+    execution status, and cancel runs via the JSON-RPC methods createQuery, getQueryRun,
+    and cancelQueryRun over HTTP, authenticated with an x-api-key header.
+- aid: flipside:query-results
+  name: Query Results
+  tags:
+  - Results
+  - Pagination
+  - Data
+  image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
+  humanURL: https://docs.flipsidecrypto.xyz
+  baseURL: https://api-v2.flipsidecrypto.xyz/json-rpc
+  properties:
+  - url: https://docs.flipsidecrypto.xyz
+    type: Documentation
+  - url: https://docs.flipsidecrypto.xyz/data/data-products/api-sdk-developers/get-started/run-your-first-query
+    type: APIReference
+  - url: openapi/flipside-openapi.yml
+    type: OpenAPI
+  description: Retrieve paginated query results with column names, types, rows, and
+    run metadata via the JSON-RPC getQueryRunResults method, with configurable page
+    size, page number, and result format (CSV or JSON).
+- aid: flipside:datasets
+  name: Datasets
+  tags:
+  - Datasets
+  - Snowflake
+  - On-Chain
+  image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
+  humanURL: https://docs.flipsidecrypto.xyz
+  baseURL: https://api-v2.flipsidecrypto.xyz/json-rpc
+  properties:
+  - url: https://docs.flipsidecrypto.xyz
+    type: Documentation
+  - url: https://flipsidecrypto.xyz/blockchain-data/
+    type: Documentation
+  - url: openapi/flipside-openapi.yml
+    type: OpenAPI
+  description: Curated, Snowflake-backed blockchain datasets spanning Ethereum, Solana,
+    Arbitrum, Polygon, and 20+ other chains, queried through the same JSON-RPC SQL
+    interface using the snowflake-default data source and flipside data provider.
+common:
+- type: GitHubOrganization
+  url: https://github.com/FlipsideCrypto
+- type: LinkedIn
+  url: https://www.linkedin.com/company/flipside-crypto
+- type: Website
+  url: https://flipsidecrypto.xyz
+- type: Documentation
+  url: https://docs.flipsidecrypto.xyz
+- type: Plans
+  url: plans/flipside-plans-pricing.yml
+- type: RateLimits
+  url: rate-limits/flipside-rate-limits.yml
+- type: FinOps
+  url: finops/flipside-finops.yml
+maintainers:
+- FN: Kin Lane
+  email: kin@apievangelist.com

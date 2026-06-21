@@ -1,0 +1,66 @@
+specification: API Commons Rate Limits
+specificationVersion: '0.1'
+schema: https://raw.githubusercontent.com/api-evangelist/interface-research/main/schema/api-commons.yml#/$defs/RateLimits
+provider: Flipside Crypto
+providerId: flipside
+created: '2026-06-21'
+modified: '2026-06-21'
+reconciled: false
+tags:
+- Blockchain
+- Analytics
+- SQL
+- Web3
+- Data
+- Rate Limiting
+- Quotas
+- Throttling
+description: >-
+  The Flipside Data API governs usage primarily through a query-seconds
+  (warehouse-seconds) credit budget rather than fixed RPS limits: each account
+  has a free monthly allotment of query seconds and may purchase more. Result
+  retrieval is paginated, with each result page capped at roughly 30MB and a
+  default page size of 1000 rows. Concurrency and request-rate ceilings are
+  enforced per account and per tier. Specific numeric request-per-second and
+  concurrency values are not publicly fixed in this artifact.
+notes: >-
+  As of May 2026 Flipside sold its blockchain data business to SonarX; verify
+  current query-seconds budgets, concurrency, and pagination limits against the
+  active provider on reconciliation.
+sources:
+- https://docs.flipsidecrypto.xyz
+- https://docs.flipsidecrypto.xyz/data/data-products/api-sdk-developers/get-started/run-your-first-query
+- https://flipsidecrypto.xyz/pricing
+responseCodes:
+  throttled: 429
+limits:
+- name: Query Seconds Budget
+  scope: account
+  metric: query_seconds
+  limit: 500 free per month, more via paid tiers
+  notes: Primary usage governor; warehouse-seconds consumed by query execution.
+- name: Result Page Size
+  scope: request
+  metric: rows
+  limit: 1000 default
+  notes: Configurable per getQueryRunResults page; large result sets paginate.
+- name: Result Page Payload
+  scope: request
+  metric: bytes
+  limit: ~30MB per page
+  notes: Each result page is capped at approximately 30MB.
+- name: Concurrency
+  scope: account
+  metric: concurrent_queries
+  limit: see provider documentation
+  notes: Concurrent query execution varies by account tier.
+policies:
+- name: Credit-Metered Usage
+  description: Usage is debited against a query-seconds budget; exhausting it blocks new runs until topped up or reset.
+- name: Result Caching
+  description: createQuery maxAgeMinutes and resultTTLHours control reuse of cached results to avoid re-spending query seconds.
+- name: Backoff Strategy
+  description: Clients should poll getQueryRun with intervals and implement backoff; cancel long-running queries via cancelQueryRun to control cost.
+maintainers:
+- FN: Kin Lane
+  email: kin@apievangelist.com

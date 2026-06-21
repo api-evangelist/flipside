@@ -1,0 +1,134 @@
+specification: API Commons Plans
+specificationVersion: '0.1'
+schema: https://raw.githubusercontent.com/api-evangelist/interface-research/main/schema/api-commons.yml#/$defs/Plans
+provider: Flipside Crypto
+providerId: flipside
+created: '2026-06-21'
+modified: '2026-06-21'
+reconciled: false
+tags:
+- Blockchain
+- Analytics
+- SQL
+- Web3
+- Data
+- Plans
+description: >-
+  Flipside's Data API and Data Studio were offered on a credit-based model
+  metered by query (warehouse) seconds. Every account received a free
+  Community allotment of query seconds; additional capacity was purchased via
+  Builder and Pro tiers, with scaled/Enterprise pricing arranged through sales
+  (including Snowflake Data Shares). The Data Studio remained free for ad-hoc
+  analysis, dashboards, and query testing. Specific paid per-tier prices were
+  quoted via demo/sales rather than published as fixed list prices.
+notes: >-
+  As of May 2026 Flipside sold its blockchain data business to SonarX and
+  Flipspace was available through June 17, 2026; the data products and pricing
+  documented here reflect the Flipside Data API as published prior to that
+  transition. Paid-tier dollar amounts are not publicly fixed and require
+  reconciliation against the current provider (Flipside/SonarX) before use.
+sources:
+- https://docs.flipsidecrypto.xyz
+- https://flipsidecrypto.xyz/pricing
+- https://flipsidecrypto.xyz/blockchain-data/
+plans:
+- id: flipside-community
+  name: Community
+  type: free
+  description: >-
+    Free tier granting a baseline allotment of query seconds for the Data API,
+    plus free use of Data Studio for ad-hoc analysis, dashboards, and testing.
+  entries:
+  - label: Free Query Seconds
+    name: community_query_seconds
+    type: free
+    metric: query_seconds
+    limit: 500
+    timeFrame: month
+    geo: global
+    unit: 1
+    price: $0
+    userMultiplied: false
+  - label: Data Studio
+    name: data_studio
+    type: free
+    metric: access
+    limit: -1
+    timeFrame: month
+    geo: global
+    unit: 1
+    price: $0
+    userMultiplied: false
+  elements:
+  - name: Query Execution (SQL)
+  - name: Query Results
+  - name: Datasets
+  - name: Data Studio
+- id: flipside-builder
+  name: Builder
+  type: usage
+  description: >-
+    Paid capacity for developers needing more than the Community allotment of
+    query seconds; metered above the free tier. Pricing quoted via Flipside.
+  entries:
+  - label: Additional Query Seconds
+    name: builder_query_seconds
+    type: usage
+    metric: query_seconds
+    limit: -1
+    timeFrame: month
+    geo: global
+    unit: 1
+    price: contact provider
+    userMultiplied: false
+  elements:
+  - name: Query Execution (SQL)
+  - name: Query Results
+  - name: Datasets
+- id: flipside-pro
+  name: Pro
+  type: usage
+  description: >-
+    Higher-volume tier with expanded query-seconds capacity and priority
+    support for production analytics workloads. Pricing quoted via Flipside.
+  entries:
+  - label: Pro Query Seconds
+    name: pro_query_seconds
+    type: usage
+    metric: query_seconds
+    limit: -1
+    timeFrame: month
+    geo: global
+    unit: 1
+    price: contact provider
+    userMultiplied: false
+  elements:
+  - name: Query Execution (SQL)
+  - name: Query Results
+  - name: Datasets
+  - name: Priority Support
+- id: flipside-enterprise
+  name: Enterprise
+  type: enterprise
+  description: >-
+    Scaled pricing, Snowflake Data Shares, and negotiated terms for
+    institutions. Contact data-shares@flipsidecrypto.com (now transitioning to
+    SonarX for blockchain data).
+  entries:
+  - label: Enterprise Agreement
+    name: enterprise
+    type: flat
+    metric: contract
+    limit: -1
+    timeFrame: year
+    geo: global
+    unit: 1
+    price: contact sales
+    userMultiplied: false
+  elements:
+  - name: Snowflake Data Shares
+  - name: Custom Volume Pricing
+  - name: Dedicated Support
+maintainers:
+- FN: Kin Lane
+  email: kin@apievangelist.com

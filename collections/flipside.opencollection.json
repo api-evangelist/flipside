@@ -1,0 +1,97 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Flipside Crypto Data API",
+    "version": "2.0",
+    "description": "JSON-RPC 2.0 over HTTP. Every request is a POST to https://api-v2.flipsidecrypto.xyz/json-rpc with a {jsonrpc, method, params, id} body and an x-api-key header. The `method` field selects the operation."
+  },
+  "request": {
+    "auth": {
+      "type": "apikey",
+      "apikey": {
+        "key": "x-api-key",
+        "value": "{{apiKey}}",
+        "in": "header"
+      }
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Query Execution (SQL)",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "createQuery - submit and run Snowflake SQL",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api-v2.flipsidecrypto.xyz/json-rpc",
+            "body": {
+              "type": "json",
+              "data": "{\n  \"jsonrpc\": \"2.0\",\n  \"method\": \"createQuery\",\n  \"params\": [\n    {\n      \"sql\": \"SELECT block_number, tx_hash FROM ethereum.core.fact_transactions LIMIT 100\",\n      \"resultTTLHours\": 1,\n      \"maxAgeMinutes\": 0,\n      \"tags\": { \"sdk_package\": \"opencollection\" },\n      \"dataSource\": \"snowflake-default\",\n      \"dataProvider\": \"flipside\"\n    }\n  ],\n  \"id\": 1\n}"
+            }
+          },
+          "docs": "Creates a query run for a Snowflake-compatible SQL string and returns a queryRunId. Use maxAgeMinutes=0 to force fresh execution; resultTTLHours controls how long results are retained."
+        },
+        {
+          "info": {
+            "name": "getQueryRun - poll execution status",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api-v2.flipsidecrypto.xyz/json-rpc",
+            "body": {
+              "type": "json",
+              "data": "{\n  \"jsonrpc\": \"2.0\",\n  \"method\": \"getQueryRun\",\n  \"params\": [\n    { \"queryRunId\": \"{{queryRunId}}\" }\n  ],\n  \"id\": 1\n}"
+            }
+          },
+          "docs": "Returns the state of a query run (QUERY_STATE_RUNNING, QUERY_STATE_SUCCESS, QUERY_STATE_FAILED, QUERY_STATE_CANCELED) for the given queryRunId."
+        },
+        {
+          "info": {
+            "name": "cancelQueryRun - cancel a running query",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api-v2.flipsidecrypto.xyz/json-rpc",
+            "body": {
+              "type": "json",
+              "data": "{\n  \"jsonrpc\": \"2.0\",\n  \"method\": \"cancelQueryRun\",\n  \"params\": [\n    { \"queryRunId\": \"{{queryRunId}}\" }\n  ],\n  \"id\": 1\n}"
+            }
+          },
+          "docs": "Cancels an in-progress query run to stop consuming query seconds."
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Query Results",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "getQueryRunResults - fetch paginated results",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api-v2.flipsidecrypto.xyz/json-rpc",
+            "body": {
+              "type": "json",
+              "data": "{\n  \"jsonrpc\": \"2.0\",\n  \"method\": \"getQueryRunResults\",\n  \"params\": [\n    {\n      \"queryRunId\": \"{{queryRunId}}\",\n      \"format\": \"json\",\n      \"page\": { \"number\": 1, \"size\": 1000 }\n    }\n  ],\n  \"id\": 1\n}"
+            }
+          },
+          "docs": "Returns columnNames, columnTypes, rows, and page metadata for a completed query run. Each page is capped at ~30MB; default page size is 1000 rows."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}
