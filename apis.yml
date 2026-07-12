@@ -78,6 +78,10 @@ apis:
     Arbitrum, Polygon, and 20+ other chains, queried through the same JSON-RPC SQL
     interface using the snowflake-default data source and flipside data provider.
 common:
+- type: DomainSecurity
+  url: security/flipside-domain-security.yml
+- type: Authentication
+  url: authentication/flipside-authentication.yml
 - type: GitHubOrganization
   url: https://github.com/FlipsideCrypto
 - type: LinkedIn
