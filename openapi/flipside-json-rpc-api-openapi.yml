@@ -1,0 +1,380 @@
+openapi: 3.0.1
+info:
+  title: Flipside Crypto Data JSON-RPC API
+  description: 'The Flipside Crypto Data API runs Snowflake-compatible SQL against curated on-chain datasets covering Ethereum, Solana, and 20+ other chains. The API uses a JSON-RPC 2.0 transport over a single HTTP endpoint: every call is an HTTP POST to /json-rpc whose body carries a {jsonrpc, method, params, id} envelope. Methods include createQuery, getQueryRun, getQueryRunResults, and cancelQueryRun. Authentication is via an x-api-key request header. Note: in May 2026 Flipside sold its blockchain data business to SonarX; this document describes the Flipside Data API as published.'
+  termsOfService: https://flipsidecrypto.xyz
+  contact:
+    name: Flipside Crypto
+    url: https://docs.flipsidecrypto.xyz
+  version: '2.0'
+servers:
+- url: https://api-v2.flipsidecrypto.xyz
+  description: Flipside Data API (JSON-RPC 2.0 over HTTP)
+security:
+- ApiKeyAuth: []
+tags:
+- name: JSON-RPC
+paths:
+  /json-rpc:
+    post:
+      operationId: jsonRpc
+      summary: JSON-RPC 2.0 entry point for all Data API methods.
+      description: Single HTTP endpoint for the Flipside Data API. The JSON-RPC `method` field selects the operation (createQuery, getQueryRun, getQueryRunResults, cancelQueryRun) and `params` carries an array with a single parameters object. All calls require the x-api-key header.
+      tags:
+      - JSON-RPC
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              oneOf:
+              - $ref: '#/components/schemas/CreateQueryRequest'
+              - $ref: '#/components/schemas/GetQueryRunRequest'
+              - $ref: '#/components/schemas/GetQueryRunResultsRequest'
+              - $ref: '#/components/schemas/CancelQueryRunRequest'
+            examples:
+              createQuery:
+                summary: Create and run a SQL query
+                value:
+                  jsonrpc: '2.0'
+                  method: createQuery
+                  params:
+                  - sql: SELECT block_number, tx_hash FROM ethereum.core.fact_transactions LIMIT 100
+                    resultTTLHours: 1
+                    maxAgeMinutes: 0
+                    tags:
+                      sdk_package: python
+                    dataSource: snowflake-default
+                    dataProvider: flipside
+                  id: 1
+              getQueryRun:
+                summary: Poll a query run status
+                value:
+                  jsonrpc: '2.0'
+                  method: getQueryRun
+                  params:
+                  - queryRunId: 01h8z9e1-0000-0000-0000-000000000000
+                  id: 1
+              getQueryRunResults:
+                summary: Fetch a page of results
+                value:
+                  jsonrpc: '2.0'
+                  method: getQueryRunResults
+                  params:
+                  - queryRunId: 01h8z9e1-0000-0000-0000-000000000000
+                    format: json
+                    page:
+                      number: 1
+                      size: 1000
+                  id: 1
+              cancelQueryRun:
+                summary: Cancel a running query
+                value:
+                  jsonrpc: '2.0'
+                  method: cancelQueryRun
+                  params:
+                  - queryRunId: 01h8z9e1-0000-0000-0000-000000000000
+                  id: 1
+      responses:
+        '200':
+          description: JSON-RPC response. HTTP status is 200 even for JSON-RPC errors; the envelope contains either a `result` or an `error` member.
+          content:
+            application/json:
+              schema:
+                oneOf:
+                - $ref: '#/components/schemas/CreateQueryResponse'
+                - $ref: '#/components/schemas/GetQueryRunResponse'
+                - $ref: '#/components/schemas/GetQueryRunResultsResponse'
+                - $ref: '#/components/schemas/CancelQueryRunResponse'
+                - $ref: '#/components/schemas/JsonRpcError'
+        '401':
+          description: Missing or invalid x-api-key.
+        '429':
+          description: Rate limit or query-seconds quota exceeded.
+components:
+  schemas:
+    QueryRun:
+      type: object
+      properties:
+        id:
+          type: string
+        sqlStatementId:
+          type: string
+        state:
+          type: string
+          enum:
+          - QUERY_STATE_READY
+          - QUERY_STATE_RUNNING
+          - QUERY_STATE_STREAMING_RESULTS
+          - QUERY_STATE_SUCCESS
+          - QUERY_STATE_FAILED
+          - QUERY_STATE_CANCELED
+        rowCount:
+          type: integer
+        totalSize:
+          type: integer
+        errorName:
+          type: string
+          nullable: true
+        errorMessage:
+          type: string
+          nullable: true
+        startedAt:
+          type: string
+          format: date-time
+          nullable: true
+        endedAt:
+          type: string
+          format: date-time
+          nullable: true
+    CreateQueryRequest:
+      allOf:
+      - $ref: '#/components/schemas/JsonRpcEnvelope'
+      - type: object
+        properties:
+          method:
+            type: string
+            enum:
+            - createQuery
+          params:
+            type: array
+            items:
+              $ref: '#/components/schemas/CreateQueryParams'
+    CancelQueryRunRequest:
+      allOf:
+      - $ref: '#/components/schemas/JsonRpcEnvelope'
+      - type: object
+        properties:
+          method:
+            type: string
+            enum:
+            - cancelQueryRun
+          params:
+            type: array
+            items:
+              $ref: '#/components/schemas/QueryRunIdParams'
+    GetQueryRunResultsRequest:
+      allOf:
+      - $ref: '#/components/schemas/JsonRpcEnvelope'
+      - type: object
+        properties:
+          method:
+            type: string
+            enum:
+            - getQueryRunResults
+          params:
+            type: array
+            items:
+              $ref: '#/components/schemas/GetQueryRunResultsParams'
+    GetQueryRunResponse:
+      type: object
+      properties:
+        jsonrpc:
+          type: string
+        id:
+          oneOf:
+          - type: integer
+          - type: string
+        result:
+          type: object
+          properties:
+            queryRun:
+              $ref: '#/components/schemas/QueryRun'
+    GetQueryRunResultsParams:
+      type: object
+      required:
+      - queryRunId
+      properties:
+        queryRunId:
+          type: string
+        format:
+          type: string
+          enum:
+          - csv
+          - json
+          default: csv
+          description: Result serialization format.
+        page:
+          type: object
+          properties:
+            number:
+              type: integer
+              default: 1
+              description: 1-indexed page number; each page is capped at ~30MB.
+            size:
+              type: integer
+              default: 1000
+              description: Rows per page.
+    GetQueryRunResultsResponse:
+      type: object
+      properties:
+        jsonrpc:
+          type: string
+        id:
+          oneOf:
+          - type: integer
+          - type: string
+        result:
+          type: object
+          properties:
+            columnNames:
+              type: array
+              items:
+                type: string
+            columnTypes:
+              type: array
+              items:
+                type: string
+            rows:
+              type: array
+              items:
+                type: array
+                items: {}
+            page:
+              type: object
+              properties:
+                currentPageNumber:
+                  type: integer
+                currentPageSize:
+                  type: integer
+                totalRows:
+                  type: integer
+                totalPages:
+                  type: integer
+            originalQueryRun:
+              $ref: '#/components/schemas/QueryRun'
+    JsonRpcEnvelope:
+      type: object
+      required:
+      - jsonrpc
+      - method
+      - params
+      - id
+      properties:
+        jsonrpc:
+          type: string
+          enum:
+          - '2.0'
+        method:
+          type: string
+        params:
+          type: array
+          description: Array containing a single parameters object.
+        id:
+          oneOf:
+          - type: integer
+          - type: string
+    JsonRpcError:
+      type: object
+      properties:
+        jsonrpc:
+          type: string
+          enum:
+          - '2.0'
+        id:
+          oneOf:
+          - type: integer
+          - type: string
+        error:
+          type: object
+          properties:
+            code:
+              type: integer
+            message:
+              type: string
+            data:
+              type: object
+    CreateQueryResponse:
+      type: object
+      properties:
+        jsonrpc:
+          type: string
+        id:
+          oneOf:
+          - type: integer
+          - type: string
+        result:
+          type: object
+          properties:
+            queryRequest:
+              type: object
+              properties:
+                queryRunId:
+                  type: string
+                userId:
+                  type: string
+                tags:
+                  type: object
+            queryRun:
+              $ref: '#/components/schemas/QueryRun'
+    CreateQueryParams:
+      type: object
+      required:
+      - sql
+      properties:
+        sql:
+          type: string
+          description: Flipside Snowflake-compatible SQL query string.
+        resultTTLHours:
+          type: integer
+          default: 1
+          description: Hours to retain the materialized result set for retrieval.
+        maxAgeMinutes:
+          type: integer
+          default: 0
+          description: Maximum acceptable age of a cached result. 0 forces fresh execution.
+        ttlMinutes:
+          type: integer
+          description: Legacy cache time-to-live in minutes.
+        tags:
+          type: object
+          additionalProperties:
+            type: string
+          description: Arbitrary key/value labels attached to the query run.
+        dataSource:
+          type: string
+          default: snowflake-default
+        dataProvider:
+          type: string
+          default: flipside
+    QueryRunIdParams:
+      type: object
+      required:
+      - queryRunId
+      properties:
+        queryRunId:
+          type: string
+          description: Identifier returned by createQuery.
+    CancelQueryRunResponse:
+      type: object
+      properties:
+        jsonrpc:
+          type: string
+        id:
+          oneOf:
+          - type: integer
+          - type: string
+        result:
+          type: object
+          properties:
+            canceledQueryRun:
+              $ref: '#/components/schemas/QueryRun'
+    GetQueryRunRequest:
+      allOf:
+      - $ref: '#/components/schemas/JsonRpcEnvelope'
+      - type: object
+        properties:
+          method:
+            type: string
+            enum:
+            - getQueryRun
+          params:
+            type: array
+            items:
+              $ref: '#/components/schemas/QueryRunIdParams'
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: x-api-key
+      description: Flipside Data API key, created in the Flipside account settings.
