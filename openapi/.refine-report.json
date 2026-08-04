@@ -1,0 +1,14 @@
+{
+  "provider": "flipside",
+  "sources": [
+    "flipside-json-rpc-api-openapi.yml"
+  ],
+  "outputs": [
+    "flipside-json-rpc-api-openapi.yml"
+  ],
+  "archived": [],
+  "errors": [],
+  "warnings": [],
+  "notes": [],
+  "skipped": []
+}
