@@ -1,0 +1,242 @@
+{
+  "item": [
+    {
+      "id": "bdec4939-2a2c-48a6-a28f-48d8984017b8",
+      "name": "JSON-RPC",
+      "description": {
+        "content": "",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "7a666e61-7582-4596-98d8-5b1585a2dee6",
+          "name": "JSON-RPC 2.0 entry point for all Data API methods.",
+          "request": {
+            "name": "JSON-RPC 2.0 entry point for all Data API methods.",
+            "description": {
+              "content": "Single HTTP endpoint for the Flipside Data API. The JSON-RPC `method` field selects the operation (createQuery, getQueryRun, getQueryRunResults, cancelQueryRun) and `params` carries an array with a single parameters object. All calls require the x-api-key header.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "json-rpc"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"jsonrpc\": \"<string>\",\n  \"method\": \"<string>\",\n  \"params\": \"<array>\",\n  \"id\": \"<integer>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "d1a28106-5232-41f6-9758-a7813fc1225a",
+              "name": "JSON-RPC response. HTTP status is 200 even for JSON-RPC errors; the envelope contains either a `result` or an `error` member.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "json-rpc"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "x-api-key",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"jsonrpc\": \"2.0\",\n  \"method\": \"createQuery\",\n  \"params\": [\n    {\n      \"sql\": \"SELECT block_number, tx_hash FROM ethereum.core.fact_transactions LIMIT 100\",\n      \"resultTTLHours\": 1,\n      \"maxAgeMinutes\": 0,\n      \"tags\": {\n        \"sdk_package\": \"python\"\n      },\n      \"dataSource\": \"snowflake-default\",\n      \"dataProvider\": \"flipside\"\n    }\n  ],\n  \"id\": 1\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"jsonrpc\": \"string\",\n  \"id\": 4638,\n  \"result\": {\n    \"queryRequest\": {\n      \"queryRunId\": \"string\",\n      \"userId\": \"string\",\n      \"tags\": {}\n    },\n    \"queryRun\": {\n      \"id\": \"string\",\n      \"sqlStatementId\": \"string\",\n      \"state\": \"QUERY_STATE_RUNNING\",\n      \"rowCount\": 8655,\n      \"totalSize\": 4483,\n      \"errorName\": \"string\",\n      \"errorMessage\": \"string\",\n      \"startedAt\": \"1991-10-30T03:12:55.596Z\",\n      \"endedAt\": \"1960-08-11T21:02:08.634Z\"\n    }\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "634e1bcc-0bf2-49a0-9f82-54779b253bf2",
+              "name": "Missing or invalid x-api-key.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "json-rpc"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "x-api-key",
+                    "value": "<API Key>"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"jsonrpc\": \"2.0\",\n  \"method\": \"createQuery\",\n  \"params\": [\n    {\n      \"sql\": \"SELECT block_number, tx_hash FROM ethereum.core.fact_transactions LIMIT 100\",\n      \"resultTTLHours\": 1,\n      \"maxAgeMinutes\": 0,\n      \"tags\": {\n        \"sdk_package\": \"python\"\n      },\n      \"dataSource\": \"snowflake-default\",\n      \"dataProvider\": \"flipside\"\n    }\n  ],\n  \"id\": 1\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "e38d2a3c-5da5-4360-b0a6-49c10a5f61d7",
+              "name": "Rate limit or query-seconds quota exceeded.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "json-rpc"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "x-api-key",
+                    "value": "<API Key>"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"jsonrpc\": \"2.0\",\n  \"method\": \"createQuery\",\n  \"params\": [\n    {\n      \"sql\": \"SELECT block_number, tx_hash FROM ethereum.core.fact_transactions LIMIT 100\",\n      \"resultTTLHours\": 1,\n      \"maxAgeMinutes\": 0,\n      \"tags\": {\n        \"sdk_package\": \"python\"\n      },\n      \"dataSource\": \"snowflake-default\",\n      \"dataProvider\": \"flipside\"\n    }\n  ],\n  \"id\": 1\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Too Many Requests",
+              "code": 429,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://api-v2.flipsidecrypto.xyz",
+      "key": "baseUrl"
+    }
+  ],
+  "auth": {
+    "type": "apikey",
+    "apikey": [
+      {
+        "key": "key",
+        "value": "x-api-key"
+      },
+      {
+        "key": "value",
+        "value": "{{apiKey}}"
+      },
+      {
+        "key": "in",
+        "value": "header"
+      }
+    ]
+  },
+  "info": {
+    "_postman_id": "5af4bffd-26d3-48b9-b1a5-1ba5aeef9358",
+    "name": "Flipside Crypto Data JSON-RPC API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "The Flipside Crypto Data API runs Snowflake-compatible SQL against curated on-chain datasets covering Ethereum, Solana, and 20+ other chains. The API uses a JSON-RPC 2.0 transport over a single HTTP endpoint: every call is an HTTP POST to /json-rpc whose body carries a {jsonrpc, method, params, id} envelope. Methods include createQuery, getQueryRun, getQueryRunResults, and cancelQueryRun. Authentication is via an x-api-key request header. Note: in May 2026 Flipside sold its blockchain data business to SonarX; this document describes the Flipside Data API as published.\n\nContact Support:\n Name: Flipside Crypto",
+      "type": "text/plain"
+    }
+  }
+}

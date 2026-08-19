@@ -1,0 +1,41 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Flipside Crypto Data JSON-RPC API",
+    "version": "2.0"
+  },
+  "request": {
+    "auth": {
+      "type": "apikey",
+      "key": "x-api-key",
+      "value": "{{x-api-key}}",
+      "placement": "header"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "JSON-RPC",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "JSON-RPC 2.0 entry point for all Data API methods.",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api-v2.flipsidecrypto.xyz/json-rpc",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Single HTTP endpoint for the Flipside Data API. The JSON-RPC `method` field selects the operation (createQuery, getQueryRun, getQueryRunResults, cancelQueryRun) and `params` carries an array with a single parameters object. All calls require the x-api-key header."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}
