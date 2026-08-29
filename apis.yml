@@ -9,6 +9,18 @@ description: Flipside Crypto is a blockchain analytics platform that lets analys
   authenticated with an x-api-key. In May 2026 Flipside sold its blockchain data business
   to SonarX and refocused on its edisyl enterprise AI platform; this catalog documents
   the Flipside Data API as published.
+deliveryModel:
+  model: saas
+  open_source: false
+  commercial: true
+  callable_host: false
+  label: Hosted service · you call their endpoint
+  confidence: medium
+  source:
+  - openapi
+  - pricing
+  generated: '2026-08-28'
+  method: derived
 accessModel:
   pricing: freemium
   onboarding: self-serve
