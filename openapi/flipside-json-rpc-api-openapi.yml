@@ -1,7 +1,7 @@
-openapi: 3.0.1
+openapi: 3.2.0
 info:
-  title: Flipside Crypto Data JSON-RPC API
-  description: 'The Flipside Crypto Data API runs Snowflake-compatible SQL against curated on-chain datasets covering Ethereum, Solana, and 20+ other chains. The API uses a JSON-RPC 2.0 transport over a single HTTP endpoint: every call is an HTTP POST to /json-rpc whose body carries a {jsonrpc, method, params, id} envelope. Methods include createQuery, getQueryRun, getQueryRunResults, and cancelQueryRun. Authentication is via an x-api-key request header. Note: in May 2026 Flipside sold its blockchain data business to SonarX; this document describes the Flipside Data API as published.'
+  title: Flipside Crypto Data JSON RPC API
+  description: The Flipside Crypto Data API runs Snowflake-compatible SQL against curated on-chain datasets covering Ethereum, Solana, and 20+ other chains.
   termsOfService: https://flipsidecrypto.xyz
   contact:
     name: Flipside Crypto
@@ -18,7 +18,7 @@ paths:
   /json-rpc:
     post:
       operationId: jsonRpc
-      summary: JSON-RPC 2.0 entry point for all Data API methods.
+      summary: JSON-RPC 2.0 entry point for all Data API methods
       description: Single HTTP endpoint for the Flipside Data API. The JSON-RPC `method` field selects the operation (createQuery, getQueryRun, getQueryRunResults, cancelQueryRun) and `params` carries an array with a single parameters object. All calls require the x-api-key header.
       tags:
       - JSON-RPC
@@ -93,79 +93,34 @@ paths:
           description: Rate limit or query-seconds quota exceeded.
 components:
   schemas:
-    QueryRun:
+    QueryRunIdParams:
+      type: object
+      required:
+      - queryRunId
+      properties:
+        queryRunId:
+          type: string
+          description: Identifier returned by createQuery.
+    JsonRpcError:
       type: object
       properties:
-        id:
-          type: string
-        sqlStatementId:
-          type: string
-        state:
+        jsonrpc:
           type: string
           enum:
-          - QUERY_STATE_READY
-          - QUERY_STATE_RUNNING
-          - QUERY_STATE_STREAMING_RESULTS
-          - QUERY_STATE_SUCCESS
-          - QUERY_STATE_FAILED
-          - QUERY_STATE_CANCELED
-        rowCount:
-          type: integer
-        totalSize:
-          type: integer
-        errorName:
-          type: string
-          nullable: true
-        errorMessage:
-          type: string
-          nullable: true
-        startedAt:
-          type: string
-          format: date-time
-          nullable: true
-        endedAt:
-          type: string
-          format: date-time
-          nullable: true
-    CreateQueryRequest:
-      allOf:
-      - $ref: '#/components/schemas/JsonRpcEnvelope'
-      - type: object
-        properties:
-          method:
-            type: string
-            enum:
-            - createQuery
-          params:
-            type: array
-            items:
-              $ref: '#/components/schemas/CreateQueryParams'
-    CancelQueryRunRequest:
-      allOf:
-      - $ref: '#/components/schemas/JsonRpcEnvelope'
-      - type: object
-        properties:
-          method:
-            type: string
-            enum:
-            - cancelQueryRun
-          params:
-            type: array
-            items:
-              $ref: '#/components/schemas/QueryRunIdParams'
-    GetQueryRunResultsRequest:
-      allOf:
-      - $ref: '#/components/schemas/JsonRpcEnvelope'
-      - type: object
-        properties:
-          method:
-            type: string
-            enum:
-            - getQueryRunResults
-          params:
-            type: array
-            items:
-              $ref: '#/components/schemas/GetQueryRunResultsParams'
+          - '2.0'
+        id:
+          oneOf:
+          - type: integer
+          - type: string
+        error:
+          type: object
+          properties:
+            code:
+              type: integer
+            message:
+              type: string
+            data:
+              type: object
     GetQueryRunResponse:
       type: object
       properties:
@@ -180,6 +135,19 @@ components:
           properties:
             queryRun:
               $ref: '#/components/schemas/QueryRun'
+    GetQueryRunResultsRequest:
+      allOf:
+      - $ref: '#/components/schemas/JsonRpcEnvelope'
+      - type: object
+        properties:
+          method:
+            type: string
+            enum:
+            - getQueryRunResults
+          params:
+            type: array
+            items:
+              $ref: '#/components/schemas/GetQueryRunResultsParams'
     GetQueryRunResultsParams:
       type: object
       required:
@@ -205,6 +173,44 @@ components:
               type: integer
               default: 1000
               description: Rows per page.
+    QueryRun:
+      type: object
+      properties:
+        id:
+          type: string
+        sqlStatementId:
+          type: string
+        state:
+          type: string
+          enum:
+          - QUERY_STATE_READY
+          - QUERY_STATE_RUNNING
+          - QUERY_STATE_STREAMING_RESULTS
+          - QUERY_STATE_SUCCESS
+          - QUERY_STATE_FAILED
+          - QUERY_STATE_CANCELED
+        rowCount:
+          type: integer
+        totalSize:
+          type: integer
+        errorName:
+          type:
+          - string
+          - 'null'
+        errorMessage:
+          type:
+          - string
+          - 'null'
+        startedAt:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        endedAt:
+          type:
+          - string
+          - 'null'
+          format: date-time
     GetQueryRunResultsResponse:
       type: object
       properties:
@@ -243,47 +249,32 @@ components:
                   type: integer
             originalQueryRun:
               $ref: '#/components/schemas/QueryRun'
-    JsonRpcEnvelope:
-      type: object
-      required:
-      - jsonrpc
-      - method
-      - params
-      - id
-      properties:
-        jsonrpc:
-          type: string
-          enum:
-          - '2.0'
-        method:
-          type: string
-        params:
-          type: array
-          description: Array containing a single parameters object.
-        id:
-          oneOf:
-          - type: integer
-          - type: string
-    JsonRpcError:
-      type: object
-      properties:
-        jsonrpc:
-          type: string
-          enum:
-          - '2.0'
-        id:
-          oneOf:
-          - type: integer
-          - type: string
-        error:
-          type: object
-          properties:
-            code:
-              type: integer
-            message:
-              type: string
-            data:
-              type: object
+    GetQueryRunRequest:
+      allOf:
+      - $ref: '#/components/schemas/JsonRpcEnvelope'
+      - type: object
+        properties:
+          method:
+            type: string
+            enum:
+            - getQueryRun
+          params:
+            type: array
+            items:
+              $ref: '#/components/schemas/QueryRunIdParams'
+    CreateQueryRequest:
+      allOf:
+      - $ref: '#/components/schemas/JsonRpcEnvelope'
+      - type: object
+        properties:
+          method:
+            type: string
+            enum:
+            - createQuery
+          params:
+            type: array
+            items:
+              $ref: '#/components/schemas/CreateQueryParams'
     CreateQueryResponse:
       type: object
       properties:
@@ -306,6 +297,33 @@ components:
                 tags:
                   type: object
             queryRun:
+              $ref: '#/components/schemas/QueryRun'
+    CancelQueryRunRequest:
+      allOf:
+      - $ref: '#/components/schemas/JsonRpcEnvelope'
+      - type: object
+        properties:
+          method:
+            type: string
+            enum:
+            - cancelQueryRun
+          params:
+            type: array
+            items:
+              $ref: '#/components/schemas/QueryRunIdParams'
+    CancelQueryRunResponse:
+      type: object
+      properties:
+        jsonrpc:
+          type: string
+        id:
+          oneOf:
+          - type: integer
+          - type: string
+        result:
+          type: object
+          properties:
+            canceledQueryRun:
               $ref: '#/components/schemas/QueryRun'
     CreateQueryParams:
       type: object
@@ -337,41 +355,27 @@ components:
         dataProvider:
           type: string
           default: flipside
-    QueryRunIdParams:
+    JsonRpcEnvelope:
       type: object
       required:
-      - queryRunId
-      properties:
-        queryRunId:
-          type: string
-          description: Identifier returned by createQuery.
-    CancelQueryRunResponse:
-      type: object
+      - jsonrpc
+      - method
+      - params
+      - id
       properties:
         jsonrpc:
           type: string
+          enum:
+          - '2.0'
+        method:
+          type: string
+        params:
+          type: array
+          description: Array containing a single parameters object.
         id:
           oneOf:
           - type: integer
           - type: string
-        result:
-          type: object
-          properties:
-            canceledQueryRun:
-              $ref: '#/components/schemas/QueryRun'
-    GetQueryRunRequest:
-      allOf:
-      - $ref: '#/components/schemas/JsonRpcEnvelope'
-      - type: object
-        properties:
-          method:
-            type: string
-            enum:
-            - getQueryRun
-          params:
-            type: array
-            items:
-              $ref: '#/components/schemas/QueryRunIdParams'
   securitySchemes:
     ApiKeyAuth:
       type: apiKey
