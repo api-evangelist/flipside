@@ -93,51 +93,6 @@ paths:
           description: Rate limit or query-seconds quota exceeded.
 components:
   schemas:
-    GetQueryRunResultsParams:
-      type: object
-      required:
-      - queryRunId
-      properties:
-        queryRunId:
-          type: string
-        format:
-          type: string
-          enum:
-          - csv
-          - json
-          default: csv
-          description: Result serialization format.
-        page:
-          type: object
-          properties:
-            number:
-              type: integer
-              default: 1
-              description: 1-indexed page number; each page is capped at ~30MB.
-            size:
-              type: integer
-              default: 1000
-              description: Rows per page.
-    JsonRpcError:
-      type: object
-      properties:
-        jsonrpc:
-          type: string
-          enum:
-          - '2.0'
-        id:
-          oneOf:
-          - type: integer
-          - type: string
-        error:
-          type: object
-          properties:
-            code:
-              type: integer
-            message:
-              type: string
-            data:
-              type: object
     CreateQueryResponse:
       type: object
       properties:
@@ -161,162 +116,6 @@ components:
                   type: object
             queryRun:
               $ref: '#/components/schemas/QueryRun'
-    GetQueryRunResultsResponse:
-      type: object
-      properties:
-        jsonrpc:
-          type: string
-        id:
-          oneOf:
-          - type: integer
-          - type: string
-        result:
-          type: object
-          properties:
-            columnNames:
-              type: array
-              items:
-                type: string
-            columnTypes:
-              type: array
-              items:
-                type: string
-            rows:
-              type: array
-              items:
-                type: array
-                items: {}
-            page:
-              type: object
-              properties:
-                currentPageNumber:
-                  type: integer
-                currentPageSize:
-                  type: integer
-                totalRows:
-                  type: integer
-                totalPages:
-                  type: integer
-            originalQueryRun:
-              $ref: '#/components/schemas/QueryRun'
-    QueryRunIdParams:
-      type: object
-      required:
-      - queryRunId
-      properties:
-        queryRunId:
-          type: string
-          description: Identifier returned by createQuery.
-    CreateQueryRequest:
-      allOf:
-      - $ref: '#/components/schemas/JsonRpcEnvelope'
-      - type: object
-        properties:
-          method:
-            type: string
-            enum:
-            - createQuery
-          params:
-            type: array
-            items:
-              $ref: '#/components/schemas/CreateQueryParams'
-    CreateQueryParams:
-      type: object
-      required:
-      - sql
-      properties:
-        sql:
-          type: string
-          description: Flipside Snowflake-compatible SQL query string.
-        resultTTLHours:
-          type: integer
-          default: 1
-          description: Hours to retain the materialized result set for retrieval.
-        maxAgeMinutes:
-          type: integer
-          default: 0
-          description: Maximum acceptable age of a cached result. 0 forces fresh execution.
-        ttlMinutes:
-          type: integer
-          description: Legacy cache time-to-live in minutes.
-        tags:
-          type: object
-          additionalProperties:
-            type: string
-          description: Arbitrary key/value labels attached to the query run.
-        dataSource:
-          type: string
-          default: snowflake-default
-        dataProvider:
-          type: string
-          default: flipside
-    GetQueryRunRequest:
-      allOf:
-      - $ref: '#/components/schemas/JsonRpcEnvelope'
-      - type: object
-        properties:
-          method:
-            type: string
-            enum:
-            - getQueryRun
-          params:
-            type: array
-            items:
-              $ref: '#/components/schemas/QueryRunIdParams'
-    CancelQueryRunRequest:
-      allOf:
-      - $ref: '#/components/schemas/JsonRpcEnvelope'
-      - type: object
-        properties:
-          method:
-            type: string
-            enum:
-            - cancelQueryRun
-          params:
-            type: array
-            items:
-              $ref: '#/components/schemas/QueryRunIdParams'
-    GetQueryRunResponse:
-      type: object
-      properties:
-        jsonrpc:
-          type: string
-        id:
-          oneOf:
-          - type: integer
-          - type: string
-        result:
-          type: object
-          properties:
-            queryRun:
-              $ref: '#/components/schemas/QueryRun'
-    CancelQueryRunResponse:
-      type: object
-      properties:
-        jsonrpc:
-          type: string
-        id:
-          oneOf:
-          - type: integer
-          - type: string
-        result:
-          type: object
-          properties:
-            canceledQueryRun:
-              $ref: '#/components/schemas/QueryRun'
-    GetQueryRunResultsRequest:
-      allOf:
-      - $ref: '#/components/schemas/JsonRpcEnvelope'
-      - type: object
-        properties:
-          method:
-            type: string
-            enum:
-            - getQueryRunResults
-          params:
-            type: array
-            items:
-              $ref: '#/components/schemas/GetQueryRunResultsParams'
     QueryRun:
       type: object
       properties:
@@ -355,6 +154,20 @@ components:
           - string
           - 'null'
           format: date-time
+    CancelQueryRunResponse:
+      type: object
+      properties:
+        jsonrpc:
+          type: string
+        id:
+          oneOf:
+          - type: integer
+          - type: string
+        result:
+          type: object
+          properties:
+            canceledQueryRun:
+              $ref: '#/components/schemas/QueryRun'
     JsonRpcEnvelope:
       type: object
       required:
@@ -376,6 +189,193 @@ components:
           oneOf:
           - type: integer
           - type: string
+    GetQueryRunResultsRequest:
+      allOf:
+      - $ref: '#/components/schemas/JsonRpcEnvelope'
+      - type: object
+        properties:
+          method:
+            type: string
+            enum:
+            - getQueryRunResults
+          params:
+            type: array
+            items:
+              $ref: '#/components/schemas/GetQueryRunResultsParams'
+    JsonRpcError:
+      type: object
+      properties:
+        jsonrpc:
+          type: string
+          enum:
+          - '2.0'
+        id:
+          oneOf:
+          - type: integer
+          - type: string
+        error:
+          type: object
+          properties:
+            code:
+              type: integer
+            message:
+              type: string
+            data:
+              type: object
+    GetQueryRunResponse:
+      type: object
+      properties:
+        jsonrpc:
+          type: string
+        id:
+          oneOf:
+          - type: integer
+          - type: string
+        result:
+          type: object
+          properties:
+            queryRun:
+              $ref: '#/components/schemas/QueryRun'
+    CreateQueryParams:
+      type: object
+      required:
+      - sql
+      properties:
+        sql:
+          type: string
+          description: Flipside Snowflake-compatible SQL query string.
+        resultTTLHours:
+          type: integer
+          default: 1
+          description: Hours to retain the materialized result set for retrieval.
+        maxAgeMinutes:
+          type: integer
+          default: 0
+          description: Maximum acceptable age of a cached result. 0 forces fresh execution.
+        ttlMinutes:
+          type: integer
+          description: Legacy cache time-to-live in minutes.
+        tags:
+          type: object
+          additionalProperties:
+            type: string
+          description: Arbitrary key/value labels attached to the query run.
+        dataSource:
+          type: string
+          default: snowflake-default
+        dataProvider:
+          type: string
+          default: flipside
+    GetQueryRunResultsResponse:
+      type: object
+      properties:
+        jsonrpc:
+          type: string
+        id:
+          oneOf:
+          - type: integer
+          - type: string
+        result:
+          type: object
+          properties:
+            columnNames:
+              type: array
+              items:
+                type: string
+            columnTypes:
+              type: array
+              items:
+                type: string
+            rows:
+              type: array
+              items:
+                type: array
+                items: {}
+            page:
+              type: object
+              properties:
+                currentPageNumber:
+                  type: integer
+                currentPageSize:
+                  type: integer
+                totalRows:
+                  type: integer
+                totalPages:
+                  type: integer
+            originalQueryRun:
+              $ref: '#/components/schemas/QueryRun'
+    GetQueryRunResultsParams:
+      type: object
+      required:
+      - queryRunId
+      properties:
+        queryRunId:
+          type: string
+        format:
+          type: string
+          enum:
+          - csv
+          - json
+          default: csv
+          description: Result serialization format.
+        page:
+          type: object
+          properties:
+            number:
+              type: integer
+              default: 1
+              description: 1-indexed page number; each page is capped at ~30MB.
+            size:
+              type: integer
+              default: 1000
+              description: Rows per page.
+    CancelQueryRunRequest:
+      allOf:
+      - $ref: '#/components/schemas/JsonRpcEnvelope'
+      - type: object
+        properties:
+          method:
+            type: string
+            enum:
+            - cancelQueryRun
+          params:
+            type: array
+            items:
+              $ref: '#/components/schemas/QueryRunIdParams'
+    QueryRunIdParams:
+      type: object
+      required:
+      - queryRunId
+      properties:
+        queryRunId:
+          type: string
+          description: Identifier returned by createQuery.
+    GetQueryRunRequest:
+      allOf:
+      - $ref: '#/components/schemas/JsonRpcEnvelope'
+      - type: object
+        properties:
+          method:
+            type: string
+            enum:
+            - getQueryRun
+          params:
+            type: array
+            items:
+              $ref: '#/components/schemas/QueryRunIdParams'
+    CreateQueryRequest:
+      allOf:
+      - $ref: '#/components/schemas/JsonRpcEnvelope'
+      - type: object
+        properties:
+          method:
+            type: string
+            enum:
+            - createQuery
+          params:
+            type: array
+            items:
+              $ref: '#/components/schemas/CreateQueryParams'
   securitySchemes:
     ApiKeyAuth:
       type: apiKey
