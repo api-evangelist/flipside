@@ -1,4 +1,4 @@
-# Flipside Crypto (flipside)
+# Flipside Crypto
 
 <!-- API-EVANGELIST-PROVENANCE:BEGIN -->
 > ### About this repository
@@ -66,97 +66,115 @@
 
 Flipside Crypto is a blockchain analytics platform that lets analysts and developers run SQL queries against curated, Snowflake-backed on-chain datasets covering Ethereum, Solana, and 20+ other chains. The Data API exposes query execution and result retrieval over a JSON-RPC-style HTTP interface at api-v2.flipsidecrypto.xyz, authenticated with an x-api-key. In May 2026 Flipside sold its blockchain data business to SonarX and refocused on its edisyl enterprise AI platform; this catalog documents the Flipside Data API as published.
 
-**APIs.json:** [https://raw.githubusercontent.com/api-evangelist/flipside/refs/heads/main/apis.yml](https://raw.githubusercontent.com/api-evangelist/flipside/refs/heads/main/apis.yml)
+**Areas:** Blockchain · Analytics · SQL · Web3 · Data
 
-## Tags
+## Flipside Crypto on APIs.io
 
-- Blockchain
-- Analytics
-- SQL
-- Web3
-- Data
+Everything profiled for Flipside Crypto is published on APIs.io rather than in this repository. Start at the provider page — **[apis.io/providers/flipside/](https://apis.io/providers/flipside/)** — or go straight to one of the APIs or properties below.
 
-## Timestamps
+### APIs (1)
 
-- **Created:** 2026-06-21
-- **Modified:** 2026-06-21
+- [Flipside Crypto JSON-RPC API](https://apis.io/apis/flipside/flipside-json-rpc-api/) — The JSON-RPC API from Flipside Crypto — 1 operation(s) for json-rpc.
 
-## APIs
+### Published properties
 
-### Query Execution (SQL)
+Each property below is a page on APIs.io carrying the machine-readable artifact and what it says.
 
-Submit Snowflake-compatible SQL against curated on-chain datasets, poll execution status, and cancel runs via the JSON-RPC methods createQuery, getQueryRun, and cancelQueryRun over HTTP, authenticated with an x-api-key header.
+#### Agentic access (1)
 
-- **Human URL:** [https://docs.flipsidecrypto.xyz](https://docs.flipsidecrypto.xyz)
-- **Base URL:** `https://api-v2.flipsidecrypto.xyz/json-rpc`
+Which operations an agent can call, which act, and which need a human in the loop.
 
-#### Tags
+- [Flipside Agentic Access](https://apis.io/agentic-access/flipside/flipside-agentic-access/)
 
-- SQL
-- Query
-- Execution
+#### Collections (2)
 
-#### Properties
+Postman and Open Collection request collections.
 
-- [Documentation](https://docs.flipsidecrypto.xyz)
-- [API Reference](https://docs.flipsidecrypto.xyz/data/data-products/api-sdk-developers/get-started/run-your-first-query)
-- [OpenAPI](openapi/flipside-openapi.yml) — [OpenAPI Specification](https://spec.openapis.org/oas/latest.html)
-- [Postman Collection](collections/flipside.postman_collection.json) — [Postman Collection 2.1](https://schema.getpostman.com/json/collection/v2.1.0/collection.json)
-- [Open Collection](collections/flipside.opencollection.json) — [Open Collection 1.0](https://schema.opencollection.com/opencollection/v1.0.0.json)
+- [Flipside Crypto Data API](https://apis.io/collections/flipside/open-flipside/)
+- [Flipside Crypto Data JSON-RPC API](https://apis.io/collections/flipside/open-flipside-json-rpc-api/)
 
-### Query Results
+#### Security (2)
 
-Retrieve paginated query results with column names, types, rows, and run metadata via the JSON-RPC getQueryRunResults method, with configurable page size, page number, and result format (CSV or JSON).
+Authentication, trust centre, and vulnerability disclosure.
 
-- **Human URL:** [https://docs.flipsidecrypto.xyz](https://docs.flipsidecrypto.xyz)
-- **Base URL:** `https://api-v2.flipsidecrypto.xyz/json-rpc`
+- [Flipside Authentication](https://apis.io/security/flipside/flipside-authentication/)
+- [Flipside Domain Security](https://apis.io/security/flipside/flipside-domain-security/)
 
-#### Tags
+#### Plans and pricing (1)
 
-- Results
-- Pagination
-- Data
+Published plans, tiers and prices.
 
-#### Properties
+- [Flipside Plans Pricing](https://apis.io/plans/flipside/flipside-plans-pricing/)
 
-- [Documentation](https://docs.flipsidecrypto.xyz)
-- [API Reference](https://docs.flipsidecrypto.xyz/data/data-products/api-sdk-developers/get-started/run-your-first-query)
-- [OpenAPI](openapi/flipside-openapi.yml) — [OpenAPI Specification](https://spec.openapis.org/oas/latest.html)
-- [Postman Collection](collections/flipside.postman_collection.json) — [Postman Collection 2.1](https://schema.getpostman.com/json/collection/v2.1.0/collection.json)
-- [Open Collection](collections/flipside.opencollection.json) — [Open Collection 1.0](https://schema.opencollection.com/opencollection/v1.0.0.json)
+#### Rate limits (1)
 
-### Datasets
+Published request limits.
 
-Curated, Snowflake-backed blockchain datasets spanning Ethereum, Solana, Arbitrum, Polygon, and 20+ other chains, queried through the same JSON-RPC SQL interface using the snowflake-default data source and flipside data provider.
+- [Flipside Rate Limits](https://apis.io/rate-limits/flipside/flipside-rate-limits/)
 
-- **Human URL:** [https://docs.flipsidecrypto.xyz](https://docs.flipsidecrypto.xyz)
-- **Base URL:** `https://api-v2.flipsidecrypto.xyz/json-rpc`
+#### FinOps (1)
 
-#### Tags
+What the API costs to run, by operation.
 
-- Datasets
-- Snowflake
-- On-Chain
+- [Flipside Finops](https://apis.io/finops/flipside/flipside-finops/)
 
-#### Properties
+## Where to find this API
 
-- [Documentation](https://docs.flipsidecrypto.xyz)
-- [Documentation](https://flipsidecrypto.xyz/blockchain-data/)
-- [OpenAPI](openapi/flipside-openapi.yml) — [OpenAPI Specification](https://spec.openapis.org/oas/latest.html)
-- [Postman Collection](collections/flipside.postman_collection.json) — [Postman Collection 2.1](https://schema.getpostman.com/json/collection/v2.1.0/collection.json)
-- [Open Collection](collections/flipside.opencollection.json) — [Open Collection 1.0](https://schema.opencollection.com/opencollection/v1.0.0.json)
+Links to the company's own pages. This repository publishes no copy of their specifications — the canonical document is theirs and lives at the URLs below.
 
-## Common Properties
-
-- [GitHub Organization](https://github.com/FlipsideCrypto)
-- [LinkedIn](https://www.linkedin.com/company/flipside-crypto)
 - [Website](https://flipsidecrypto.xyz)
 - [Documentation](https://docs.flipsidecrypto.xyz)
-- [Plans](plans/flipside-plans-pricing.yml)
-- [Rate Limits](rate-limits/flipside-rate-limits.yml)
-- [Fin Ops](finops/flipside-finops.yml)
+- [GitHub](https://github.com/FlipsideCrypto)
 
-## Maintainers
+## API Evangelist rating
 
-**FN:** Kin Lane
-**Email:** kin@apievangelist.com
+**Kin Score 25.0** — emerging · rubric 0.24.0 · scored 2026-10-17
+
+| Facet | Score |
+|---|---|
+| Discoverability | 66.1 |
+| Contract quality | 51.4 |
+| Contract governance | 0.0 |
+| Operational transparency | 10.5 |
+| Developer ergonomics | 19.0 |
+| Access clarity | 7.9 |
+
+**Agent readiness 24.7** — agent-aware
+
+| Agent-readiness dimension | Result |
+|---|---|
+| Spec Presence | yes |
+| Agentic Access | derived (partial credit) |
+| Reversibility Documented | documented (partial credit) |
+| MCP Server | — |
+| Auth Clarity | bearer (partial credit) |
+| Idempotency | — |
+| Error Semantics | — |
+| OpenAPI Examples | verified |
+| Rate Limit Signal | derived (partial credit) |
+| Event Surface Described | — |
+| Agent Skills | — |
+| Well Known Catalog | — |
+| Consent Identity | — |
+| Agent Card | — |
+| Dry Run Mode | — |
+| Delegated Identity | — |
+| Protected Resource Metadata | — |
+| Dynamic Client Registration | — |
+| Agentic Commerce | — |
+
+**Regulatory alignment 11.8** — Horizontal (data, software, accessibility, platform)
+
+The rubric is published at [github.com/api-evangelist/kin-score](https://github.com/api-evangelist/kin-score). The per-check breakdown behind these numbers — which checks were earned, partial or missed — along with score history and how this provider compares to its peers, is available at [apis.io/providers/flipside/](https://apis.io/providers/flipside/).
+
+## How this profile is made
+
+API Evangelist profiles a company's public API surface the way a developer would find it: the website, developer portal and documentation, the specifications it publishes, its public repositories, and its pricing, status and changelog pages. From that it derives the properties above — contracts split per API, workflows, schemas, collections, governance rules, plans and rate limits — and scores them against the published [Kin Score rubric](https://github.com/api-evangelist/kin-score).
+
+The artifacts are published on [APIs.io](https://apis.io), not in this repository. This repository is the public record for Flipside Crypto: the place to say something is wrong, missing or out of date, and to ask for a re-score or a removal.
+
+## Open an issue
+
+- **Something about this listing** — a wrong description, a missing API, a stale artifact or a question about the rating: [open an issue on this repository](https://github.com/api-evangelist/flipside/issues/new).
+- **A new API, or one that is not in the catalog yet** — [submit it on APIs.io](https://apis.io/add/).
+- **Anything else** — [the APIs.io inbox](https://github.com/api-search/inbox/issues/new) or [info@apievangelist.com](mailto:info@apievangelist.com).
